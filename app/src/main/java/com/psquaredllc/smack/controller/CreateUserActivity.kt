@@ -1,9 +1,11 @@
-package com.psquaredllc.smack
+package com.psquaredllc.smack.controller
 
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.psquaredllc.smack.R
+import com.psquaredllc.smack.services.AuthService
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*
 
@@ -47,6 +49,11 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun createUserClicked(view: View) {
+        AuthService.registerUser(this,createEmailText.text.toString(),createPasswordText.text.toString()){complete->
+            if (complete){
+
+            }
+        }
 
     }
 }
