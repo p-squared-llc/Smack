@@ -19,27 +19,27 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun generateUserAvatar(view: View) {
-        val random =  Random()
+        val random = Random()
         val color = random.nextInt(2)
         val avatarNumber = random.nextInt(28)
 
-        if (color == 0){
+        if (color == 0) {
             userAvatar = "light$avatarNumber"
         } else {
             userAvatar = "dark$avatarNumber"
         }
-        val resourceId = resources.getIdentifier(userAvatar,"drawable", packageName)
+        val resourceId = resources.getIdentifier(userAvatar, "drawable", packageName)
         createAvatarImageView.setImageResource(resourceId)
 
     }
 
     fun generateColorClicked(view: View) {
-        val random =  Random()
+        val random = Random()
         val r = random.nextInt(255)
         val g = random.nextInt(255)
         val b = random.nextInt(255)
 
-        createAvatarImageView.setBackgroundColor(Color.rgb(r,g,b))
+        createAvatarImageView.setBackgroundColor(Color.rgb(r, g, b))
 
         val savedR = r.toDouble() / 255
         val savedG = g.toDouble() / 255
@@ -49,14 +49,21 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun createUserClicked(view: View) {
+
+        val userName = createUserNameText.text.toString()
         val email = createEmailText.text.toString()
         val password = createPasswordText.text.toString()
-        AuthService.registerUser(this,email,password){ registerSuccess->
-            if (registerSuccess){
-                AuthService.loginUser(this,email, password){loginSuccess ->
-                    if (loginSuccess){
-                        println(AuthService.authToken)
-                        println(AuthService.userEmail)
+
+
+        AuthService.registerUser(this, email, password) { registerSuccess ->
+            if (registerSuccess) {
+                AuthService.loginUser(this, email, password) { loginSuccess ->
+                    if (loginSuccess) {
+                        AuthService.createUser(this, userName, email, userAvatar, avatarColor) { createSuccess ->
+                            if (createSuccess){
+                                finish()
+                            }
+                        }
                     }
                 }
 
