@@ -93,7 +93,8 @@ object AuthService {
         val requestBody = jsonBody.toString()
 
         val createRequest =
-            object : JsonObjectRequest(Method.POST, URL_CREATE_USER, null, Response.Listener { response ->
+            object : JsonObjectRequest(Method.POST, URL_CREATE_USER, null,
+                Response.Listener { response ->
 
                 try {
 
@@ -133,7 +134,8 @@ object AuthService {
 
     fun findUserByEmail(context: Context, complete: (Boolean) -> Unit) {
         val findUserRequest = object :
-            JsonObjectRequest(Method.GET, "$URL_FIND_USER_BY_EMAIL$userEmail", null, Response.Listener { response ->
+            JsonObjectRequest(Method.GET, "$URL_FIND_USER_BY_EMAIL$userEmail", null,
+                Response.Listener { response ->
 
                 try {
                     UserDataService.name = response.getString("name")

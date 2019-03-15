@@ -13,13 +13,17 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.psquaredllc.smack.R
 import com.psquaredllc.smack.constants.BROADCAST_USER_DATA_CHANGE
+import com.psquaredllc.smack.constants.SOCKET_URL
 import com.psquaredllc.smack.services.AuthService
 import com.psquaredllc.smack.services.UserDataService
+import io.socket.client.IO
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    val socket = IO.socket(SOCKET_URL)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,26 +38,44 @@ class MainActivity : AppCompatActivity() {
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver,
-            IntentFilter(BROADCAST_USER_DATA_CHANGE))
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            userDataChangeReceiver,
+            IntentFilter(BROADCAST_USER_DATA_CHANGE)
+        )
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        socket.connect()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(userDataChangeReceiver)
+        socket.disconnect()
     }
 
     private val userDataChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (AuthService.isLoggedIn){
+            println(AuthService.isLoggedIn)
+            if (AuthService.isLoggedIn) {
                 userNameNavHeader.text = UserDataService.name
                 userEmailNavHeader.text = UserDataService.email
-                val resourceId = resources.getIdentifier(UserDataService.avatarName,"drawable",
-                    packageName)
+                val resourceId = resources.getIdentifier(
+                    UserDataService.avatarName, "drawable",
+                    packageName
+                )
                 userImageNavHeader.setImageResource(resourceId)
                 userImageNavHeader.setBackgroundColor(UserDataService.returnAvatarColor(UserDataService.avatarColor))
-                loginButtonNavHeader.text = "Logout"
+                loginButtonNavHeader.text = getString(R.string.Logout)
 
 
             }
 
         }
     }
+
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
@@ -62,8 +84,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun loginBtnNavClicked(view: View){
-        if (AuthService.isLoggedIn){
+    fun loginBtnNavClicked(view: View) {
+        if (AuthService.isLoggedIn) {
             UserDataService.logout()
             userNameNavHeader.text = ""
             userEmailNavHeader.text = ""
@@ -72,47 +94,47 @@ class MainActivity : AppCompatActivity() {
             loginButtonNavHeader.text = "Login"
 
 
-        }else {
+        } else {
             val loginIntent = Intent(this, LoginActivity::class.java)
             startActivity(loginIntent)
         }
 
 
-
     }
 
-    fun addChannelClicked(view: View){
-        if (AuthService.isLoggedIn){
+    fun addChannelClicked(view: View) {
+        if (AuthService.isLoggedIn) {
             val builder = AlertDialog.Builder(this)
-            val dialogView = layoutInflater.inflate(R.layout.add_channel_dialog,null)
+            val dialogView = layoutInflater.inflate(R.layout.add_channel_dialog, null)
 
             builder.setView(dialogView)
-                .setPositiveButton("Add"){dialog: DialogInterface?, which: Int ->
+                .setPositiveButton("Add") { dialog: DialogInterface?, which: Int ->
                     val nameTextField = dialogView.findViewById<EditText>(R.id.addChannelNameTxt)
                     val descTextField = dialogView.findViewById<EditText>(R.id.addChennelDescTxt)
                     val channelName = nameTextField.text.toString()
                     val channelDesc = descTextField.text.toString()
                     // Create Channel from name and description
+                    socket.emit("newChannel", channelName, channelDesc)
 
                 }
-                .setNegativeButton("Cancel"){dialog: DialogInterface?, which: Int ->
+                .setNegativeButton("Cancel") { dialog: DialogInterface?, which: Int ->
 
                 }
                 .show()
         }
     }
 
-    fun sendMsgBtnClicked(view: View){
+    fun sendMsgBtnClicked(view: View) {
 
 
         hideKeyboard()
     }
 
-    fun hideKeyboard(){
+    fun hideKeyboard() {
         val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-        if (inputManager.isAcceptingText){
-            inputManager.hideSoftInputFromWindow(currentFocus.windowToken,0)
+        if (inputManager.isAcceptingText) {
+            inputManager.hideSoftInputFromWindow(currentFocus.windowToken, 0)
         }
 
     }

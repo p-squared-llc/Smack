@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.LocalBroadcastManager
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.psquaredllc.smack.R
+import com.psquaredllc.smack.constants.BROADCAST_USER_DATA_CHANGE
 import com.psquaredllc.smack.services.AuthService
+import com.psquaredllc.smack.services.UserDataService
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -33,6 +36,9 @@ class LoginActivity : AppCompatActivity() {
                     AuthService.findUserByEmail(this) { findSuccess ->
                         if (findSuccess) {
                             enableSpinner(false)
+
+                            val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
+                            LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange)
                             finish()
                         } else {
                             errorToast()
