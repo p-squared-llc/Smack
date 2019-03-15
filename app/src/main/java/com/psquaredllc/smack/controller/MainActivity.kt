@@ -19,6 +19,7 @@ import com.psquaredllc.smack.services.AuthService
 import com.psquaredllc.smack.services.MessageService
 import com.psquaredllc.smack.services.UserDataService
 import io.socket.client.IO
+import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -26,7 +27,7 @@ import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    val socket = IO.socket(SOCKET_URL)
+    private val socket: Socket = IO.socket(SOCKET_URL)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +95,7 @@ class MainActivity : AppCompatActivity() {
             userEmailNavHeader.text = ""
             userImageNavHeader.setImageResource(R.drawable.profiledefault)
             userImageNavHeader.setBackgroundColor(Color.TRANSPARENT)
-            loginButtonNavHeader.text = "Login"
+            loginButtonNavHeader.text = getString(R.string.Login)
 
 
         } else {
@@ -111,7 +112,7 @@ class MainActivity : AppCompatActivity() {
             val dialogView = layoutInflater.inflate(R.layout.add_channel_dialog, null)
 
             builder.setView(dialogView)
-                .setPositiveButton("Add") { dialog: DialogInterface?, which: Int ->
+                .setPositiveButton("Add") { _: DialogInterface?, _: Int ->
                     val nameTextField = dialogView.findViewById<EditText>(R.id.addChannelNameTxt)
                     val descTextField = dialogView.findViewById<EditText>(R.id.addChennelDescTxt)
                     val channelName = nameTextField.text.toString()
@@ -120,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                     socket.emit("newChannel", channelName, channelDesc)
 
                 }
-                .setNegativeButton("Cancel") { dialog: DialogInterface?, which: Int ->
+                .setNegativeButton("Cancel") { _: DialogInterface?, _: Int ->
 
                 }
                 .show()
@@ -148,7 +149,7 @@ class MainActivity : AppCompatActivity() {
         hideKeyboard()
     }
 
-    fun hideKeyboard() {
+    private fun hideKeyboard() {
         val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         if (inputManager.isAcceptingText) {
