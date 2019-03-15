@@ -14,9 +14,12 @@ import android.widget.EditText
 import com.psquaredllc.smack.R
 import com.psquaredllc.smack.constants.BROADCAST_USER_DATA_CHANGE
 import com.psquaredllc.smack.constants.SOCKET_URL
+import com.psquaredllc.smack.model.Channel
 import com.psquaredllc.smack.services.AuthService
+import com.psquaredllc.smack.services.MessageService
 import com.psquaredllc.smack.services.UserDataService
 import io.socket.client.IO
+import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
@@ -37,17 +40,17 @@ class MainActivity : AppCompatActivity() {
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
+        socket.connect()
+        socket.on("channelCreated",onNewChannel)
+    }
 
+    override fun onResume() {
+        super.onResume()
         LocalBroadcastManager.getInstance(this).registerReceiver(
             userDataChangeReceiver,
             IntentFilter(BROADCAST_USER_DATA_CHANGE)
         )
-    }
 
-
-    override fun onResume() {
-        super.onResume()
-        socket.connect()
     }
 
     override fun onDestroy() {
@@ -121,6 +124,21 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 .show()
+        }
+    }
+
+    private val onNewChannel = Emitter.Listener {args ->
+        runOnUiThread {
+            val channelName = args[0] as String
+            val channelDescription= args[1] as String
+            val channelId = args[2] as String
+
+            val newChannel = Channel(channelName, channelDescription, channelId)
+            MessageService.channels.add(newChannel)
+            println(newChannel.name)
+            println(newChannel.description)
+            println(newChannel.id)
+
         }
     }
 
