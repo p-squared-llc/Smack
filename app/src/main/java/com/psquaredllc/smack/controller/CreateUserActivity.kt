@@ -8,7 +8,7 @@ import android.support.v4.content.LocalBroadcastManager
 import android.view.View
 import android.widget.Toast
 import com.psquaredllc.smack.R
-import com.psquaredllc.smack.constants.BROADCAST_USER_DATA_CHANGE
+import com.psquaredllc.smack.utilities.BROADCAST_USER_DATA_CHANGE
 import com.psquaredllc.smack.services.AuthService
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*

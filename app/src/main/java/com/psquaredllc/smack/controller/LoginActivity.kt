@@ -9,9 +9,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.psquaredllc.smack.R
-import com.psquaredllc.smack.constants.BROADCAST_USER_DATA_CHANGE
+import com.psquaredllc.smack.utilities.BROADCAST_USER_DATA_CHANGE
 import com.psquaredllc.smack.services.AuthService
-import com.psquaredllc.smack.services.UserDataService
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {

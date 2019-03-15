@@ -1,4 +1,4 @@
-package com.psquaredllc.smack.constants
+package com.psquaredllc.smack.utilities
 
 const val BASE_URL = "https://chat-app-devslopes-class.herokuapp.com/v1/"
 //const val BASE_URL = "http://10.0.2.2:3005/v1/"  //BASE_URL for local DB
