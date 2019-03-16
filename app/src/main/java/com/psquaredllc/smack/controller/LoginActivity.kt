@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
         hideKeyboard()
 
         if (email.isNotEmpty()&&password.isNotEmpty()) {
-            AuthService.loginUser(this, email, password) { loginSuccess ->
+            AuthService.loginUser(email, password) { loginSuccess ->
 
                 if (loginSuccess) {
                     AuthService.findUserByEmail(this) { findSuccess ->
@@ -65,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
         enableSpinner(false)
     }
 
-    fun enableSpinner(enable: Boolean) {
+    private fun enableSpinner(enable: Boolean) {
         if (enable) {
             loginSpinner.visibility = View.VISIBLE
         } else {
@@ -75,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
         loginCreateUserBtn.isEnabled = !enable
     }
 
-    fun hideKeyboard(){
+    private fun hideKeyboard(){
         val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         if (inputManager.isAcceptingText){

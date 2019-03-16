@@ -1,10 +1,9 @@
 package com.psquaredllc.smack.services
 
-import android.content.Context
+
 import android.util.Log
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
 import com.psquaredllc.smack.controller.App
 import com.psquaredllc.smack.utilities.URL_FIND_ALL_CHANNELS
 import com.psquaredllc.smack.model.Channel
@@ -14,7 +13,7 @@ object MessageService {
 
     val channels = ArrayList<Channel>()
 
-    fun getChannels (context: Context, complete: (Boolean) -> Unit){
+    fun getChannels (complete: (Boolean) -> Unit){
 
         val channelsRequest = object : JsonArrayRequest(Method.GET,
             URL_FIND_ALL_CHANNELS,null, Response.Listener {response ->
@@ -39,7 +38,7 @@ object MessageService {
                     }
                 }
 
-            }, Response.ErrorListener { error ->
+            }, Response.ErrorListener {
                 Log.d("ERROR", "Could not retrieve channels")
                 complete(false)
             }){

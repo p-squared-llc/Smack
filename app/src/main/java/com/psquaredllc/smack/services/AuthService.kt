@@ -8,7 +8,6 @@ import com.android.volley.Response
 import com.android.volley.Response.Listener
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.psquaredllc.smack.controller.App
 import com.psquaredllc.smack.utilities.*
 import org.json.JSONException
@@ -17,14 +16,14 @@ import org.json.JSONObject
 object AuthService {
 
 
-    fun registerUser(context: Context, email: String, password: String, complete: (Boolean) -> Unit) {
+    fun registerUser(email: String, password: String, complete: (Boolean) -> Unit) {
 
         val jsonBody = JSONObject()
         jsonBody.put("email", email)
         jsonBody.put("password", password)
         val requestBody = jsonBody.toString()
 
-        val registerRequest = object : StringRequest(Method.POST, URL_REGISTER, Listener { response ->
+        val registerRequest = object : StringRequest(Method.POST, URL_REGISTER, Listener {
             complete(true)
         }, Response.ErrorListener { error ->
             Log.d("ERROR", "Could not register user: $error")
@@ -42,7 +41,7 @@ object AuthService {
         App.prefs.requestQueue.add(registerRequest)
     }
 
-    fun loginUser(context: Context, email: String, password: String, complete: (Boolean) -> Unit) {
+    fun loginUser(email: String, password: String, complete: (Boolean) -> Unit) {
 
         val jsonBody = JSONObject()
         jsonBody.put("email", email)
@@ -77,7 +76,6 @@ object AuthService {
     }
 
     fun createUser(
-        context: Context,
         name: String,
         email: String,
         avatarName: String,
@@ -125,7 +123,7 @@ object AuthService {
 
                 override fun getHeaders(): MutableMap<String, String> {
                     val headers = HashMap<String, String>()
-                    headers.put("Authorization", "Bearer ${App.prefs.authToken}")
+                    headers["Authorization"] = "Bearer ${App.prefs.authToken}"
                     return headers
                 }
             }
@@ -163,7 +161,7 @@ object AuthService {
 
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
-                headers.put("Authorization", "Bearer ${App.prefs.authToken}")
+                headers["Authorization"] = "Bearer ${App.prefs.authToken}"
                 return headers
             }
         }
