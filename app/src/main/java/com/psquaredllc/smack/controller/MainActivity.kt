@@ -12,6 +12,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import com.psquaredllc.smack.MessageAdapter
 import com.psquaredllc.smack.R
 import com.psquaredllc.smack.utilities.BROADCAST_USER_DATA_CHANGE
 import com.psquaredllc.smack.utilities.SOCKET_URL
@@ -32,11 +33,16 @@ class MainActivity : AppCompatActivity() {
 
     private val socket: Socket = IO.socket(SOCKET_URL)
     lateinit var channelAdapter : ArrayAdapter<Channel>
+    lateinit var messageAdapter : MessageAdapter
     var selectedChannel : Channel? = null
 
     private fun setupAdapters(){
         channelAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, MessageService.channels)
         channel_list.adapter = channelAdapter
+
+        messageAdapter  = MessageAdapter(this, MessageService.messages)
+
+        messageListView.adapter = messageAdapter
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,8 +92,7 @@ class MainActivity : AppCompatActivity() {
                 userEmailNavHeader.text = UserDataService.email
                 val resourceId = resources.getIdentifier(
                     UserDataService.avatarName, "drawable",
-                    packageName
-                )
+                    packageName)
                 userImageNavHeader.setImageResource(resourceId)
                 userImageNavHeader.setBackgroundColor(UserDataService.returnAvatarColor(UserDataService.avatarColor))
                 loginButtonNavHeader.text = getString(R.string.Logout)
@@ -101,6 +106,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
+
             }
 
         }
@@ -109,6 +115,15 @@ class MainActivity : AppCompatActivity() {
     fun updateWithChannel(){
         mainChannelName.text = "#${selectedChannel?.name}"
         //Download messages for channel
+        MessageService.getMessages(selectedChannel!!.id){ complete ->
+            if (complete){
+                if (MessageService.messages.count()>0){
+                    messageAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+
+
     }
 
     override fun onBackPressed() {
