@@ -9,4 +9,5 @@
     <string name="Logout">Logout</string>
     <string name="Login">Login</string>
     <string name="user_avatar">User Avatar</string>
+    <string name="Please_log_in">Please log in</string>
 </resources>

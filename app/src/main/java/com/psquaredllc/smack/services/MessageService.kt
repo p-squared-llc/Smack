@@ -63,16 +63,17 @@ object MessageService {
 
     fun getMessages (channelId: String, complete: (Boolean) -> Unit){
 
+        val url = "${URL_FIND_ALL_MESSAGES}$channelId"
+
         val messagesRequest = object : JsonArrayRequest(Method.GET,
-            "${URL_FIND_ALL_MESSAGES}$channelId",null, Response.Listener {response ->
+            url,null, Response.Listener {response ->
+                clearMessages()
 
                     try {
                         for (x in 0 until response.length()) {
                             val message = response.getJSONObject(x)
                             val id = message.getString("_id")
                             val messageBody = message.getString("messageBody")
-                            println(messageBody)
-//                            val channelId = message.getString("channelId")    //coming from function call
                             val userName = message.getString("userName")
                             val userAvatar = message.getString("userAvatar")
                             val userAvatarColor = message.getString("userAvatarColor")
@@ -106,7 +107,15 @@ object MessageService {
                 return headers
             }
         }
+
         App.prefs.requestQueue.add(messagesRequest)
     }
 
+    fun clearMessages(){
+        messages.clear()
+    }
+
+    fun clearChannels(){
+        channels.clear()
+    }
 }

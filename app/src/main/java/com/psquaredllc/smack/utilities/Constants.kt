@@ -14,7 +14,7 @@ const val URL_AUTH_FIND_ME = "${BASE_URL}account/me"
 const val URL_FIND_USER_BY_EMAIL = "${BASE_URL}user/byEmail/"
 const val URL__ADD_CHANNEL = "${BASE_URL}channel/add"
 const val URL_FIND_ALL_CHANNELS = "${BASE_URL}channel"
-const val URL_FIND_ALL_MESSAGES = "${BASE_URL}message/byChannel"
+const val URL_FIND_ALL_MESSAGES = "${BASE_URL}message/byChannel/"
 
 //Broadcast Constants
 const val BROADCAST_USER_DATA_CHANGE = "BROADCAST_USER_DATA_CHANGE"
